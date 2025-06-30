@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import BellIcon from '../assets/notification.svg';
 import PlayIcon from '../assets/white-play-button.svg';
 
 const { width } = Dimensions.get('window');
+const cardWidth = width * 0.9; 
 
 const courseImages = {
   'ui-ux': require('../assets/ui-ux.png'),
@@ -28,7 +29,38 @@ const coursePlayColors = {
   'business': '#FF5B7E',
 };
 
+const ongoingCourses = [
+  {
+    title: '3D Art & Illustration',
+    progress: 0.5,
+    image: require('../assets/3d-art-illution.png'),
+    color: '#7E66FF',
+  },
+  {
+    title: 'UI/UX Design',
+    progress: 0.8,
+    image: require('../assets/ui-ux.png'),
+    color: '#FF6B81',
+  },
+  {
+    title: 'Business Marketing',
+    progress: 0.3,
+    image: require('../assets/business.png'),
+    color: '#3EC6E0',
+  },
+];
+
 const HomeScreen = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollViewRef = useRef(null);
+
+  const onScroll = (event) => {
+    const slide = Math.round(event.nativeEvent.contentOffset.x / cardWidth);
+    if (slide !== activeIndex) {
+      setActiveIndex(slide);
+    }
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
@@ -44,27 +76,49 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Ongoing Course */}
-      <View style={styles.ongoingCard}>
-        <Text style={styles.ongoingLabel}>ongoing</Text>
-        <Text style={styles.courseTitle}>3D Art & Illustration</Text>
-        <View style={styles.progressBarBg}>
-          <View style={[styles.progressBarFill, { width: '50%' }]} />
-        </View>
-        <TouchableOpacity style={styles.continueBtn}>
-          <Text style={styles.continueText}>Continue</Text>
-        </TouchableOpacity>
-        <Image
-          source={require('../assets/3d-art-illution.png')}
-          style={styles.ongoingImage}
-        />
+      {/* Ongoing Course Carousel */}
+      <View style={styles.carouselContainer}>
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          style={{ width: cardWidth }}
+          contentContainerStyle={{ alignItems: 'center' }}
+        >
+          {ongoingCourses.map((course, index) => (
+            <View key={index} style={[styles.ongoingCard, { backgroundColor: course.color }]}>
+              <View style={styles.cardContent}>
+                <Text style={styles.ongoingLabel}>ongoing</Text>
+                <Text style={styles.courseTitle}>{course.title}</Text>
+                
+                <View style={styles.progressSection}>
+                  <Text style={styles.progressText}>{`${Math.round(course.progress * 100)}%`}</Text>
+                  <View style={styles.progressBarBg}>
+                    <View style={[styles.progressBarFill, { width: `${course.progress * 100}%` }]} />
+                  </View>
+                </View>
+
+                <TouchableOpacity style={styles.continueBtn}>
+                  <Text style={styles.continueText}>Continue</Text>
+                </TouchableOpacity>
+              </View>
+              <Image source={course.image} style={styles.ongoingImage} />
+            </View>
+          ))}
+        </ScrollView>
       </View>
 
       {/* Dots */}
-      <View style={styles.dots}>
-        <View style={[styles.dot, { backgroundColor: '#7E66FF' }]} />
-        <View style={styles.dot} />
-        <View style={styles.dot} />
+      <View style={styles.dotsContainer}>
+        {ongoingCourses.map((_, index) => (
+          <View
+            key={index}
+            style={[styles.dot, activeIndex === index ? styles.activeDot : {}]}
+          />
+        ))}
       </View>
 
       {/* Choose Course */}
@@ -119,7 +173,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   avatar: {
     width: 48,
@@ -128,98 +184,110 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#222',
+    fontWeight: '600',
+    color: '#333',
   },
   subtext: {
-    color: '#888',
     fontSize: 14,
+    color: '#777',
     marginTop: 2,
   },
   notification: {
-    marginLeft: 'auto',
-    position: 'relative',
-    padding: 4,
+    padding: 8,
   },
   redDot: {
     position: 'absolute',
-    top: 2,
-    right: 2,
+    top: 8,
+    right: 8,
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: '#FF3B30',
-    borderWidth: 1,
-    borderColor: '#fff',
+  },
+  carouselContainer: {
+    alignItems: 'center',
+    marginTop: 20,
   },
   ongoingCard: {
-    backgroundColor: '#7E66FF',
+    width: cardWidth,
+    height: 180,
     borderRadius: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 20,
-    marginVertical: 16,
-    minHeight: 180,
-    position: 'relative',
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4,
+  },
+  cardContent: {
+    justifyContent: 'space-around',
+    width: '55%',
+    height: '100%',
   },
   ongoingLabel: {
-    color: '#fff',
-    fontSize: 14,
-    opacity: 0.8,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    fontWeight: '500',
+    textTransform: 'uppercase',
   },
   courseTitle: {
     color: '#fff',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginVertical: 6,
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  progressSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  progressText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    marginRight: 12,
   },
   progressBarBg: {
-    width: '60%',
+    flex: 1,
     height: 8,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.2)',
     borderRadius: 4,
-    marginVertical: 10,
   },
   progressBarFill: {
-    height: 8,
+    height: '100%',
     backgroundColor: '#fff',
     borderRadius: 4,
   },
   continueBtn: {
-    backgroundColor: '#fff',
-    paddingVertical: 8,
-    paddingHorizontal: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     alignSelf: 'flex-start',
   },
   continueText: {
-    color: '#7E66FF',
+    color: '#fff',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 14,
   },
   ongoingImage: {
-    position: 'absolute',
-    right: 10,
-    top: 20,
-    width: 120,
-    height: 120,
-    resizeMode: 'contain',
+    width: 140,
+    height: 140,
+    right: 0,
+    bottom: 0,
   },
-  dots: {
+  dotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 16,
+    alignItems: 'center',
+    marginTop: 16,
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#ddd',
+    backgroundColor: '#D9D9D9',
     marginHorizontal: 4,
+  },
+  activeDot: {
+    backgroundColor: '#7E66FF',
+    width: 16,
   },
   sectionTitle: {
     fontSize: 18,

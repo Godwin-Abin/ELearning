@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   courseCard: {
-    width: 200,
+    width: 190,
     height: 130,
     borderRadius: 16,
     padding: 16,
