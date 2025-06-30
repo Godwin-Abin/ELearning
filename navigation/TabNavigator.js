@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ClassStack from './ClassStack';
 
 import HomeDark from '../assets/HomeDark.svg';
 import HomeLight from '../assets/HomeLight.svg';
@@ -17,31 +17,15 @@ export default function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, size }) => {
           if (route.name === 'Home') {
-            return focused ? (
-              <HomeDark width={size} height={size} />
-            ) : (
-              <HomeLight width={size} height={size} />
-            );
+            return focused ? <HomeDark width={size} height={size} /> : <HomeLight width={size} height={size} />;
+          } else if (route.name === 'Class') {
+            return focused ? <ClassDark width={size} height={size} /> : <ClassLight width={size} height={size} />;
+          } else if (route.name === 'Profile') {
+            return focused ? <ProfileDark width={size} height={size} /> : <ProfileLight width={size} height={size} />;
           }
-          else if (route.name === 'Class'){
-            return focused ? (
-              <ClassDark width={size} height={size} />
-            ) : (
-              <ClassLight width={size} height={size} />
-            );
-          }
-          else if (route.name === 'Profile'){
-            return focused ? (
-              <ProfileDark width={size} height={size} />
-            ) : (
-              <ProfileLight width={size} height={size} />
-            );
-          }
-          else{
-            return null;
-          }
+          return null;
         },
         tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: '#666',
@@ -50,7 +34,7 @@ export default function TabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Class" component={ProfileScreen} />
+      <Tab.Screen name="Class" component={ClassStack} />
       <Tab.Screen name="Profile" component={SettingsScreen} />
     </Tab.Navigator>
   );
