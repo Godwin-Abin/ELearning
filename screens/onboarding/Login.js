@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import PhoneIcon from '../../assets/phone.svg';
+import DropDown from '../../assets/drop-down.svg';
+
 const { width } = Dimensions.get('window');
 
 const Login = () => {
@@ -30,24 +33,27 @@ const Login = () => {
       <Text style={styles.subtitle}>Login with your phone number</Text>
 
       {/* Phone Input Container */}
-      <View style={styles.inputContainer}>
+      <View style={styles.inputMainContainer}>
         <Image source={require('../../assets/flag.png')} style={styles.flagIcon} />
-        <Text style={styles.countryCode}>+91</Text>
-        <Image source={require('../../assets/phone.svg')} style={[styles.phoneIcon, { tintColor: '#000' }]} />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter phone number"
-          keyboardType="numeric"
-          value={phone}
-          onChangeText={(text) => {
-            // Only allow digits and limit to 10 numbers
-            const numericValue = text.replace(/[^0-9]/g, '');
-            if (numericValue.length <= 10) {
-              setPhone(numericValue);
-            }
-          }}
-          maxLength={10}
-        />
+        <DropDown width={10} height={10} marginLeft={-22} marginRight={10}/>
+        <View style={styles.inputContainer}>
+          <PhoneIcon width={20} height={20} />
+          <Text style={styles.countryCode}>+91</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter phone number"
+            keyboardType="numeric"
+            value={phone}
+            onChangeText={(text) => {
+              // Only allow digits and limit to 10 numbers
+              const numericValue = text.replace(/[^0-9]/g, '');
+              if (numericValue.length <= 10) {
+                setPhone(numericValue);
+              }
+            }}
+            maxLength={10}
+          />
+        </View>
       </View>
 
       {/* Join Button */}
@@ -92,15 +98,21 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 30,
   },
+  inputMainContainer:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    width:'100%',
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#7974B3',
     borderRadius: 12,
     paddingHorizontal: 12,
     backgroundColor: '#fff',
     height: 56,
+    width:"82%",
   },
   flagIcon: {
     width: 98,
@@ -109,17 +121,12 @@ const styles = StyleSheet.create({
     marginLeft: -28,
   },
   countryCode: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
-  },
-  phoneIcon: {
-    width: 20,
-    height: 20,
-    tintColor: '#000',
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 18,
   },
   button: {
     backgroundColor: '#7E66FF',

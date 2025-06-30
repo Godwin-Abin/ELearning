@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import ProfileIcon from '../../assets/profile.svg';
+
 const { width } = Dimensions.get('window');
 
 const EnterName = ({ navigation }) => {
@@ -37,10 +39,7 @@ const EnterName = ({ navigation }) => {
       <Text style={styles.subtitle}>Enter your full name for your account.</Text>
 
       <View style={styles.inputWrapper}>
-        <Image
-          source={require('../../assets/profile.svg')} // Optional icon if you have
-          style={styles.icon}
-        />
+        <ProfileIcon width={20} height={20} marginRight={8}/>
         <TextInput
           style={styles.input}
           placeholder="Enter Name"
@@ -67,13 +66,15 @@ const styles = StyleSheet.create({
     width: width * 0.6,
     height: 180,
     alignSelf: 'center',
-    marginBottom: 30,
+    marginBottom: 35,
+    marginTop: '20%',
   },
   title: {
     fontSize: 28,
     fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
+    marginTop: '10%',
     color: '#000',
   },
   subtitle: {
@@ -92,12 +93,6 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 40,
   },
-  icon: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-    tintColor: '#999',
-  },
   input: {
     flex: 1,
     fontSize: 16,
@@ -110,6 +105,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 2,
+    marginTop: '70%',
   },
   buttonText: {
     color: '#fff',

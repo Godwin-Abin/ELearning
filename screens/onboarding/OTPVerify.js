@@ -47,6 +47,27 @@ const OTPVerify = ({ route, navigation }) => {
     }
   };
 
+  // Format phone number as 3 4 3 (e.g., 123 4567 890)
+  const formatPhoneNumber = (num) => {
+    // Remove all non-digit characters
+    const digits = num.replace(/\D/g, '');
+    if (digits.length === 10) {
+      // If number is 10 digits (e.g., 9002134333)
+      return `${digits.slice(0, 3)} ${digits.slice(3, 7)} ${digits.slice(7)}`;
+    } else if (digits.length === 11 && digits.startsWith('0')) {
+      // If number is 11 digits and starts with 0 (e.g., 09002134333)
+      return `${digits.slice(1, 4)} ${digits.slice(4, 8)} ${digits.slice(8)}`;
+    } else if (digits.length === 12 && digits.startsWith('91')) {
+      // If number is 12 digits and starts with country code (e.g., 919002134333)
+      return `${digits.slice(2, 5)} ${digits.slice(5, 9)} ${digits.slice(9)}`;
+    } else if (digits.length === 13 && digits.startsWith('91')) {
+      // If number is 13 digits and starts with +91 (e.g., 919002134333)
+      return `${digits.slice(3, 6)} ${digits.slice(6, 10)} ${digits.slice(10)}`;
+    }
+    // Fallback: return as is
+    return num;
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -58,7 +79,8 @@ const OTPVerify = ({ route, navigation }) => {
       <Text style={styles.title}>Verify OTP</Text>
       <Text style={styles.subtitle}>
         Please enter the 4 digit verification code that is send to you at{' '}
-        <Text style={styles.phone}>{phone}</Text>
+        <Text style={styles.phone}>+91 </Text>
+        <Text style={styles.phone}>{formatPhoneNumber(phone)}</Text>
       </Text>
 
       <CodeField
@@ -112,14 +134,14 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   title: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: '600',
     textAlign: 'center',
     color: '#000',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
     color: '#777',
     marginBottom: 30,
@@ -134,8 +156,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cell: {
-    width: 60,
-    height: 60,
+    width: 90,
+    height: 90,
     lineHeight: 55,
     fontSize: 24,
     borderWidth: 1,
@@ -147,17 +169,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cellText: {
-    fontSize: 24,
+    fontSize: 30,
     color: '#000',
+    fontWeight: '500',
   },
   focusCell: {
     borderColor: '#7E66FF',
   },
   timerText: {
-    textAlign: 'center',
+    textAlign: 'right',
     fontSize: 14,
     color: '#999',
-    marginBottom: 30,
+    marginBottom: 50,
   },
   timer: {
     color: '#7E66FF',

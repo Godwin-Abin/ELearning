@@ -11,12 +11,17 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import LockIcon from '../../assets/password-lock.svg';
+import DontViewIcon from '../../assets/dont-view.svg';
+import ShowIcon from '../../assets/show.svg';
+
 const { width } = Dimensions.get('window');
 
 export default function SetPassword({ route, setIsOnboarded }) {
   const { name, phone } = route.params;
   const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const requirements = {
     length: password.length >= 8,
@@ -56,8 +61,9 @@ export default function SetPassword({ route, setIsOnboarded }) {
       <Text style={styles.subtitle}>Set a strong password for your account.</Text>
 
       <View style={styles.inputWrapper}>
+        <LockIcon width={20} height={20} marginRight={8} />
         <TextInput
-          secureTextEntry
+          secureTextEntry={!showPassword}
           style={styles.input}
           value={password}
           onChangeText={(text) => {
@@ -67,6 +73,16 @@ export default function SetPassword({ route, setIsOnboarded }) {
           placeholder="********"
           placeholderTextColor="#aaa"
         />
+        <TouchableOpacity
+          style={styles.togglePassword}
+          onPress={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? (
+            <DontViewIcon width={20} height={20} strokeWidth={1.5} />
+          ) : (
+            <ShowIcon width={20} height={20} strokeWidth={1.5} />
+          )}
+        </TouchableOpacity>
       </View>
 
       {showError && (
@@ -124,15 +140,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputWrapper: {
+    flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    height: 52,
-    justifyContent: 'center',
-    backgroundColor: '#f9f9f9',
+    borderColor: '#ccc',
+    borderRadius: 10,
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    height: 50,
+    marginBottom: 40,
   },
   input: {
+    flex: 1,
     fontSize: 16,
     color: '#000',
   },
@@ -162,5 +180,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  togglePassword: {
+    padding: 8,
   },
 });
